@@ -1,19 +1,32 @@
-// Initialize database
+const { Sequelize, DataTypes } = require('sequelize');
 
-const adminUser = {
+// Initialize Sequelize - SQLite database
+const sequelize = new Sequelize('sqlite::memory:');
+
+// Define User model
+const User = sequelize.define('User', {
+  username: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+});
+
+async function setupDatabase() {
+  // Sync all models
+  await sequelize.sync({ force: true });
+  console.log('Database & tables created!');
+
+  // Create admin user
+  await User.create({
     username: 'mixaura@gmail.com',
-    password: 'mix.aura.712'
-};
-
-function initializeDatabase() {
-    // Code to add admin user to the database
-    addUserToDatabase(adminUser);
+    password: 'mix.aura.712',
+  });
+  console.log('Admin user created!');
 }
 
-function addUserToDatabase(user) {
-    // Your logic to add user to the database
-    console.log(`Adding user: ${user.username}`);
-    // e.g., db.insert(user);
-}
-
-initializeDatabase();
+setupDatabase();
