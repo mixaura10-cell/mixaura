@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mix Aura - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #050508;
+            color: #fff;
+        }
+
+        .glass-card {
+            background: rgba(15, 15, 25, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 16px;
+        }
+
+        .glass-card:hover {
+            background: rgba(20, 20, 35, 0.8);
+            border-color: rgba(139, 92, 246, 0.5);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 0%, #a78bfa 50%, #60a5fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-input {
+            background: rgba(15, 15, 25, 0.6);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 8px;
+            padding: 10px 16px;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: rgba(139, 92, 246, 0.8);
+            outline: none;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            color: #a78bfa;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background: #991b1b;
+        }
+
+        .nav-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            border-left-color: #7c3aed;
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .nav-item.active {
+            border-left-color: #7c3aed;
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(15, 15, 25, 0.9);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid #22c55e;
+            color: #22c55e;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: rgba(139, 92, 246, 0.1);
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+        }
+
+        tr:hover {
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .spinner {
+            border: 3px solid rgba(139, 92, 246, 0.2);
+            border-top-color: #7c3aed;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-[#0a0a0f] border-r border-purple-500/20 overflow-y-auto">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold gradient-text mb-8">Mix Aura</h2>
+                <p class="text-sm text-gray-400 mb-6">Admin Panel</p>
+
+                <nav class="space-y-2">
+                    <div class="nav-item active" onclick="switchTab('hero')">Hero Section</div>
+                    <div class="nav-item" onclick="switchTab('services')">Services</div>
+                    <div class="nav-item" onclick="switchTab('portfolio')">Portfolio</div>
+                    <div class="nav-item" onclick="switchTab('contact')">Contact Messages</div>
+                    <div class="nav-item" onclick="switchTab('settings')">Settings</div>
+                </nav>
+
+                <div class="mt-12 pt-6 border-t border-purple-500/20">
+                    <button class="btn-secondary w-full" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto bg-[#050508]">
+            <div class="p-8">
+                <!-- Hero Section Tab -->
+                <div id="tab-hero" class="tab-content">
+                    <h1 class="text-4xl font-bold gradient-text mb-8">Hero Section</h1>
+                    <div class="glass-card p-8 space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Headline</label>
+                            <textarea id="headline" class="form-input w-full h-24" placeholder="We Build Digital Power."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Subheadline</label>
+                            <textarea id="subheadline" class="form-input w-full h-20" placeholder="Digital Marketing & Web Development That Actually Converts."></textarea>
+                        </div>
+                        <button class="btn-primary" onclick="saveHero()">Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- Services Tab -->
+                <div id="tab-services" class="tab-content hidden">
+                    <h1 class="text-4xl font-bold gradient-text mb-8">Services</h1>
+                    
+                    <!-- Digital Marketing Service -->
+                    <div class="glass-card p-8 mb-6">
+                        <h3 class="text-xl font-bold mb-4">Digital Marketing</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Title</label>
+                                <input type="text" id="marketingTitle" class="form-input w-full" placeholder="Digital Marketing">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Description</label>
+                                <textarea id="marketingDescription" class="form-input w-full h-24" placeholder="Performance-driven campaigns..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Web Development Service -->
+                    <div class="glass-card p-8 mb-6">
+                        <h3 class="text-xl font-bold mb-4">Web Development</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Title</label>
+                                <input type="text" id="developmentTitle" class="form-input w-full" placeholder="Web Development">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Description</label>
+                                <textarea id="developmentDescription" class="form-input w-full h-24" placeholder="High-performance websites..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" onclick="saveServices()">Save Changes</button>
+                </div>
+
+                <!-- Portfolio Tab -->
+                <div id="tab-portfolio" class="tab-content hidden">
+                    <div class="flex justify-between items-center mb-8">
+                        <h1 class="text-4xl font-bold gradient-text">Portfolio Projects</h1>
+                        <button class="btn-primary" onclick="openAddProjectModal()">+ Add Project</button>
+                    </div>
+
+                    <div id="projectsList" class="space-y-4">
+                        <!-- Projects will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Contact Messages Tab -->
+                <div id="tab-contact" class="tab-content hidden">
+                    <h1 class="text-4xl font-bold gradient-text mb-8">Contact Messages</h1>
+                    
+                    <div class="glass-card p-8 overflow-x-auto">
+                        <table-container>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Message</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="contactTable">
+                                    <!-- Contacts will be loaded here -->
+                                </tbody>
+                            </table>
+                        </table-container>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="tab-settings" class="tab-content hidden">
+                    <h1 class="text-4xl font-bold gradient-text mb-8">Settings</h1>
+                    
+                    <div class="glass-card p-8">
+                        <h3 class="text-xl font-bold mb-6">Change Password</h3>
+                        <div class="space-y-4 max-w-md">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Old Password</label>
+                                <input type="password" id="oldPassword" class="form-input w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">New Password</label>
+                                <input type="password" id="newPassword" class="form-input w-full">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Confirm Password</label>
+                                <input type="password" id="confirmPassword" class="form-input w-full">
+                            </div>
+                            <button class="btn-primary" onclick="changePassword()">Update Password</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Project Modal -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Add Project</h3>
+                <button onclick="closeProjectModal()" class="text-2xl">&times;</button>
+            </div>
+            
+            <div id="projectMessage"></div>
+            
+            <form id="projectForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Project Title</label>
+                    <input type="text" id="projectTitle" class="form-input w-full" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Description</label>
+                    <textarea id="projectDescription" class="form-input w-full h-20"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Category</label>
+                    <input type="text" id="projectCategory" class="form-input w-full">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Image URL</label>
+                    <input type="text" id="projectImage" class="form-input w-full">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Project URL</label>
+                    <input type="text" id="projectUrl" class="form-input w-full">
+                </div>
+                <div>
+                    <label class="flex items-center gap-3">
+                        <input type="checkbox" id="projectFeatured">
+                        <span class="text-sm font-medium">Featured Project</span>
+                    </label>
+                </div>
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" class="btn-primary flex-1">Save Project</button>
+                    <button type="button" class="btn-secondary flex-1" onclick="closeProjectModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal active">
+        <div class="modal-content" style="max-width: 400px;">
+            <h2 class="text-3xl font-bold mb-8 text-center">Admin Login</h2>
+            
+            <div id="loginMessage"></div>
+            
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Username</label>
+                    <input type="text" id="loginUsername" class="form-input w-full" placeholder="admin" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Password</label>
+                    <input type="password" id="loginPassword" class="form-input w-full" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary w-full">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = window.location.origin;
+        let currentProjectId = null;
+
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (tabName === 'contact') loadContacts();
+            if (tabName === 'portfolio') loadProjects();
+            if (tabName === 'hero') loadHeroContent();
+            if (tabName === 'services') loadServicesContent();
+        }
+
+        // Authentication
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const messageDiv = document.getElementById('loginMessage');
+
+            try {
+                const response = await fetch(`${API_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    messageDiv.innerHTML = `<div class="error-message">${data.error}</div>`;
+                    return;
+                }
+
+                localStorage.setItem('token', data.token);
+                document.getElementById('loginModal').classList.remove('active');
+                loadHeroContent();
+            } catch (err) {
+                messageDiv.innerHTML = `<div class="error-message">Login failed</div>`;
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('token');
+            location.reload();
+        }
+
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        // Hero Content
+        async function loadHeroContent() {
+            try {
+                const response = await fetch(`${API_URL}/api/content/hero`);
+                const content = await response.json();
+                document.getElementById('headline').value = content.headline || '';
+                document.getElementById('subheadline').value = content.subheadline || '';
+            } catch (err) {
+                console.error('Error loading content:', err);
+            }
+        }
+
+        async function saveHero() {
+            try {
+                const response = await fetch(`${API_URL}/api/content/hero`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify({
+                        headline: document.getElementById('headline').value,
+                        subheadline: document.getElementById('subheadline').value
+                    })
+                });
+
+                if (!response.ok) throw new Error('Save failed');
+                alert('Hero section updated successfully!');
+            } catch (err) {
+                alert('Error saving changes');
+            }
+        }
+
+        // Services Content
+        async function loadServicesContent() {
+            try {
+                const response = await fetch(`${API_URL}/api/content/services`);
+                const content = await response.json();
+                document.getElementById('marketingTitle').value = content.marketingTitle || 'Digital Marketing';
+                document.getElementById('marketingDescription').value = content.marketingDescription || '';
+                document.getElementById('developmentTitle').value = content.developmentTitle || 'Web Development';
+                document.getElementById('developmentDescription').value = content.developmentDescription || '';
+            } catch (err) {
+                console.error('Error loading content:', err);
+            }
+        }
+
+        async function saveServices() {
+            try {
+                const response = await fetch(`${API_URL}/api/content/services`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify({
+                        marketingTitle: document.getElementById('marketingTitle').value,
+                        marketingDescription: document.getElementById('marketingDescription').value,
+                        developmentTitle: document.getElementById('developmentTitle').value,
+                        developmentDescription: document.getElementById('developmentDescription').value
+                    })
+                });
+
+                if (!response.ok) throw new Error('Save failed');
+                alert('Services updated successfully!');
+            } catch (err) {
+                alert('Error saving changes');
+            }
+        }
+
+        // Portfolio
+        async function loadProjects() {
+            try {
+                const response = await fetch(`${API_URL}/api/portfolio`);
+                const projects = await response.json();
+                
+                const projectsList = document.getElementById('projectsList');
+                projectsList.innerHTML = projects.map(p => `
+                    <div class="glass-card p-6 flex justify-between items-start">
+                        <div class="flex-1">
+                            <h4 class="text-lg font-bold mb-2">${p.title}</h4>
+                            <p class="text-gray-400 text-sm mb-2">${p.description}</p>
+                            <div class="flex gap-2">
+                                <span class="text-xs px-2 py-1 bg-purple-500/20 text-purple-300 rounded">${p.category}</span>
+                                ${p.featured ? '<span class="text-xs px-2 py-1 bg-green-500/20 text-green-300 rounded">Featured</span>' : ''}
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="btn-secondary" onclick="editProject(${p.id})">Edit</button>
+                            <button class="btn-danger" onclick="deleteProject(${p.id})">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error('Error loading projects:', err);
+            }
+        }
+
+        function openAddProjectModal() {
+            currentProjectId = null;
+            document.getElementById('projectForm').reset();
+            document.getElementById('projectModal').classList.add('active');
+        }
+
+        function closeProjectModal() {
+            document.getElementById('projectModal').classList.remove('active');
+        }
+
+        async function editProject(id) {
+            // Implementation for editing projects
+            currentProjectId = id;
+            openAddProjectModal();
+        }
+
+        async function deleteProject(id) {
+            if (!confirm('Are you sure?')) return;
+            try {
+                await fetch(`${API_URL}/api/portfolio/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                loadProjects();
+            } catch (err) {
+                alert('Error deleting project');
+            }
+        }
+
+        // Contact Messages
+        async function loadContacts() {
+            try {
+                const response = await fetch(`${API_URL}/api/contact`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                const contacts = await response.json();
+                
+                const contactTable = document.getElementById('contactTable');
+                contactTable.innerHTML = contacts.map(c => `
+                    <tr>
+                        <td>${c.name}</td>
+                        <td>${c.email}</td>
+                        <td>${c.phone || 'N/A'}</td>
+                        <td class="max-w-xs truncate">${c.message}</td>
+                        <td>
+                            <select class="form-input text-xs" onchange="updateContactStatus(${c.id}, this.value)">
+                                <option value="new" ${c.status === 'new' ? 'selected' : ''}>New</option>
+                                <option value="read" ${c.status === 'read' ? 'selected' : ''}>Read</option>
+                                <option value="responded" ${c.status === 'responded' ? 'selected' : ''}>Responded</option>
+                            </select>
+                        </td>
+                        <td class="text-xs text-gray-400">${new Date(c.created_at).toLocaleDateString()}</td>
+                        <td><button class="text-sm text-purple-400 hover:text-purple-300" onclick="alert('${c.message}')">View</button></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error('Error loading contacts:', err);
+            }
+        }
+
+        async function updateContactStatus(id, status) {
+            try {
+                await fetch(`${API_URL}/api/contact/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify({ status })
+                });
+            } catch (err) {
+                alert('Error updating status');
+            }
+        }
+
+        // Change Password
+        async function changePassword() {
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/api/auth/password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify({ oldPassword, newPassword })
+                });
+
+                if (!response.ok) throw new Error('Update failed');
+                alert('Password updated successfully!');
+                document.getElementById('oldPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+            } catch (err) {
+                alert('Error updating password');
+            }
+        }
+
+        // Project Form Submit
+        document.getElementById('projectForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                title: document.getElementById('projectTitle').value,
+                description: document.getElementById('projectDescription').value,
+                category: document.getElementById('projectCategory').value,
+                image_url: document.getElementById('projectImage').value,
+                project_url: document.getElementById('projectUrl').value,
+                featured: document.getElementById('projectFeatured').checked
+            };
+
+            try {
+                const method = currentProjectId ? 'PUT' : 'POST';
+                const url = currentProjectId ? `${API_URL}/api/portfolio/${currentProjectId}` : `${API_URL}/api/portfolio`;
+
+                const response = await fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) throw new Error('Save failed');
+                alert('Project saved successfully!');
+                closeProjectModal();
+                loadProjects();
+            } catch (err) {
+                alert('Error saving project');
+            }
+        });
+
+        // Check authentication on load
+        if (!getToken()) {
+            document.getElementById('loginModal').classList.add('active');
+        } else {
+            document.getElementById('loginModal').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
